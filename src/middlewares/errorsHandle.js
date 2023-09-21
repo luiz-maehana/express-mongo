@@ -1,14 +1,15 @@
 import mongoose from 'mongoose'
+import ErrorDefault from '../errors/DefaultError.js'
+import CastErrors from '../errors/CastErrors.js'
+import ValidationErrors from '../errors/ValidationErrors.js'
 
 function errorsHandle(error, req, res, next) {
   if (error instanceof mongoose.Error.CastError) {
-    res.status(400).json({
-      message: 'Um ou Mais Dados Fornecidos Estão Incorretos!',
-    })
+    new CastErrors().sendResponse(res)
+  } else if (error instanceof mongoose.Error.ValidationError) {
+    new ValidationErrors(error).sendResponse(res)
   } else {
-    res.status(500).json({
-      message: `Falha na Requisição: ${error.message}`,
-    })
+    new ErrorDefault().sendResponse(res)
   }
 }
 
