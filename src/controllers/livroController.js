@@ -1,28 +1,13 @@
 import { autor, livro } from '../models/index.js'
 import NotFound from '../errors/NotFound.js'
-import CastErrors from '../errors/CastErrors.js'
 
 class LivroController {
 
   static async listarLivros(req, res, next) {
     try {
-      let { limit = 10, page = 1, order = '_id:-1' } = req.query
-      let [orderBy, orderAscDesc ] = order.split(':')
-      limit = parseInt(limit)
-      page = parseInt(page)
-      orderAscDesc = parseInt(orderAscDesc)
-      if (limit <= 0 || page <= 0) {
-        next(new CastErrors())
-      }
-      const listaLivros = await livro.find()
-        .sort({
-          [orderBy]: orderAscDesc
-        })
-        .skip((page - 1) * limit)
-        .limit(limit)
-        .populate('autor')
-        .exec()
-      res.status(200).json(listaLivros)
+      const buscaLivros = livro.find()
+      req.result = buscaLivros
+      next()
     } catch (e) {
       next(e)
     }
@@ -30,7 +15,7 @@ class LivroController {
 
   static async buscarLivroPorId(req, res, next) {
     try {
-      const livroResultado = await livro.findById(req.params.id).populate('autor', 'nome').exec()
+      const livroResultado = await livro.findById(req.params.id)
       if (livroResultado === null) {
         next(new NotFound('Livro Não Localizado!'))
       }
@@ -92,8 +77,9 @@ class LivroController {
       if (search === null) {
         res.status(200).send([])
       }
-      const livrosPorEditora = await livro.find(search).populate('autor')
-      res.status(200).json(livrosPorEditora)
+      const livrosResultado = livro.find(search)
+      req.result = livrosResultado
+      next()
     } catch (e) {
       next(e)
     }
