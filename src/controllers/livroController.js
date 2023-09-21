@@ -1,5 +1,6 @@
 import livro from '../models/Livro.js'
 import { autor } from '../models/Autor.js'
+import NotFound from '../errors/NotFound.js'
 
 class LivroController {
 
@@ -14,8 +15,11 @@ class LivroController {
 
   static async buscarLivroPorId (req, res, next) {
     try {
-      const livroBuscado = await livro.findById(req.params.id)
-      res.status(200).json(livroBuscado)
+      const livroResultado = await livro.findById(req.params.id).populate('autor', 'nome').exec()
+      if (livroResultado === null) {
+        next(new NotFound('Livro Não Localizado!'))
+      }
+      res.status(200).json(livroResultado)
     } catch (e) {
       next(e)
     }
@@ -41,7 +45,10 @@ class LivroController {
 
   static async atualizarLivro (req, res, next) {
     try {
-      await livro.findByIdAndUpdate(req.params.id, req.body)
+      const livroResultado = await livro.findByIdAndUpdate(req.params.id, req.body)
+      if (livroResultado === null) {
+        next(new NotFound('Livro Não Localizado!'))
+      }
       res.status(200).json({
         message: 'Livro Atualizado com Sucesso',
       })
@@ -52,7 +59,10 @@ class LivroController {
 
   static async excluirLivro (req, res, next) {
     try {
-      await livro.findByIdAndDelete(req.params.id)
+      const livroResultado = await livro.findByIdAndDelete(req.params.id)
+      if (livroResultado === null) {
+        next(new NotFound('Livro Não Localizado!'))
+      }
       res.status(200).json({
         message: 'Livro Excluido com Sucesso',
       })

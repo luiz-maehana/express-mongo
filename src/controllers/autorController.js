@@ -1,3 +1,4 @@
+import NotFound from '../errors/NotFound.js'
 import { autor } from '../models/Autor.js'
 
 class AutorController {
@@ -13,14 +14,11 @@ class AutorController {
 
   static async buscarAutorPorId (req, res, next) {
     try {
-      const autorBuscado = await autor.findById(req.params.id)
-      if (autorBuscado !== null) {
-        res.status(200).json(autorBuscado)
-      } else {
-        res.status(404).json({
-          message: 'Autor Não Localizado!',
-        })
+      const autorResultado = await autor.findById(req.params.id)
+      if (autorResultado === null) {
+        next(new NotFound('Autor Não Localizado!'))
       }
+      res.status(200).json(autorResultado)
     } catch (e) {
       next(e)
     }
@@ -40,7 +38,10 @@ class AutorController {
 
   static async atualizarAutor (req, res, next) {
     try {
-      await autor.findByIdAndUpdate(req.params.id, req.body)
+      const autorResultado = await autor.findByIdAndUpdate(req.params.id, req.body)
+      if (autorResultado === null) {
+        next(new NotFound('Autor Não Localizado!'))
+      } 
       res.status(200).json({
         message: 'Autor Atualizado com Sucesso',
       })
@@ -51,7 +52,10 @@ class AutorController {
 
   static async excluirAutor (req, res, next) {
     try {
-      await autor.findByIdAndDelete(req.params.id)
+      const autorResultado = await autor.findByIdAndDelete(req.params.id)
+      if (autorResultado === null) {
+        next(new NotFound('Autor Não Localizado!'))
+      }
       res.status(200).json({
         message: 'Autor Excluido com Sucesso',
       })

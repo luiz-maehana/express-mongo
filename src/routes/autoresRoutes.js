@@ -3,10 +3,11 @@ import AutorController from '../controllers/AutorController.js'
 
 const routes = express.Router()
 
-routes.get('/autores', AutorController.listarAutores)
-routes.post('/autores', AutorController.cadastrarAutor)
-routes.get('/autores/:id', AutorController.buscarAutorPorId)
-routes.put('/autores/:id', AutorController.atualizarAutor)
-routes.delete('/autores/:id', AutorController.excluirAutor)
+routes
+  .get('/autores', AutorController.listarAutores)
+  .post('/autores', AutorController.cadastrarAutor)
+  .get('/autores/:id', AutorController.buscarAutorPorId)
+  .put('/autores/:id', AutorController.atualizarAutor)
+  .delete('/autores/:id', AutorController.excluirAutor)
 
 export default routes

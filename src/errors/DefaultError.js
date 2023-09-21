@@ -1,4 +1,4 @@
-class ErrorDefault extends Error {
+class DefaultError extends Error {
   constructor(message = 'Erro Interno do Servidor', status = 500) {
     super()
     this.message = message
@@ -13,4 +13,4 @@ class ErrorDefault extends Error {
   }
 }
 
-export default ErrorDefault
+export default DefaultError
