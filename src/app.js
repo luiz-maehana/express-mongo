@@ -1,6 +1,7 @@
 import express  from 'express'
 import conectaNaDataBase from './config/dbConnect.js'
-import routes from './routes/index.js'
+import routes from './routes/index.js' 
+import errorsHandle from './middlewares/errorsHandle.js'
 
 const conexao = await conectaNaDataBase()
 
@@ -14,5 +15,7 @@ conexao.once('open', () => {
 
 const app = express()
 routes(app)
+
+app.use(errorsHandle)
 
 export default app
