@@ -1,4 +1,4 @@
-import mongoose from "mongoose"
+import mongoose from 'mongoose'
 
 const autorSchema = new mongoose.Schema({
   id: { type: mongoose.Schema.Types.ObjectId },
